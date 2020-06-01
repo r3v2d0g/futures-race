@@ -1,0 +1,19 @@
+[package]
+name = "futures-race"
+description = "A way to poll two futures and get the output of the first one to complete"
+version = "1.0.0"
+homepage = "https://github.com/r3v2d0g/futures-race"
+repository = "https://github.com/r3v2d0g/futures-race"
+documentation = "https://docs.rs/futures-race"
+keywords = ["async", "await", "future", "futures"]
+categories = ["asynchronous", "concurrency"]
+readme = "README.md"
+license = "MIT OR APACHE-2.0"
+authors = ["Matthieu Le brazidec (r3v2d0g) <r3v2d0g@jesus.gg>"]
+edition = "2018"
+
+[dependencies]
+pin-project = "~0.4"
+
+[dev-dependencies]
+smol = "~0.1"
