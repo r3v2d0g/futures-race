@@ -6,14 +6,48 @@
  *                                                                                                *
  **************************************************************************************************/
 
+// ======================================== Configuration ======================================= \\
+
 #![no_std]
+
+// ======================================== Documentation ======================================= \\
+
+//! A way to poll two futures and get the output of the first one to complete.
+//!
+//! ## Example
+//!
+//! ```rust
+//! use futures_race::{Race, RaceExt};
+//! use smol::Timer;
+//! use std::time::Duration;
+//!
+//! smol::run(async {
+//!     let foo = async {
+//!         Timer::new(Duration::from_millis(100)).await;
+//!         42
+//!     };
+//!
+//!     let bar = async {
+//!         Timer::new(Duration::from_millis(250)).await;
+//!         24
+//!     };
+//!
+//!     let foobar = foo.race(bar).await;
+//!     assert_eq!(foobar, 42);
+//! });
+//! ```
+
+// =========================================== Imports ========================================== \\
 
 use core::future::Future;
 use core::pin::Pin;
 use core::task::{Context, Poll};
 use pin_project_lite::pin_project;
 
+// ============================================ Types =========================================== \\
+
 pin_project! {
+    #[derive(Debug)]
     /// A future polling two other futures and returning the output of the first one to complete.
     ///
     /// ## Example
@@ -49,6 +83,8 @@ pin_project! {
         right: Right,
     }
 }
+
+// ========================================= Interfaces ========================================= \\
 
 /// An extension trait for [`Future`]s that provides a way to create [`Race`]s.
 pub trait RaceExt: Future {
@@ -90,6 +126,8 @@ pub trait RaceExt: Future {
 }
 
 impl<Fut: Future> RaceExt for Fut {}
+
+// ========================================= impl Future ======================================== \\
 
 impl<Left, Right> Future for Race<Left, Right>
 where
