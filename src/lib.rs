@@ -3,42 +3,43 @@
 use core::future::Future;
 use core::pin::Pin;
 use core::task::{Context, Poll};
-use pin_project::{pin_project, project};
+use pin_project_lite::pin_project;
 
-#[pin_project]
-/// A future polling two other futures and returning the output of the first one to complete.
-///
-/// ## Example
-///
-/// ```
-/// use futures_race::{Race, RaceExt};
-/// # use smol::Timer;
-/// # use std::time::Duration;
-///
-/// # smol::run(async {
-/// let foo = async {
-///     Timer::after(Duration::from_millis(100)).await;
-///     42
-/// };
-///
-/// let bar = async {
-///     Timer::after(Duration::from_millis(250)).await;
-///     24
-/// };
-///
-/// let foobar = foo.race(bar).await;
-/// assert_eq!(foobar, 42);
-/// # })
-/// ```
-pub struct Race<Left, Right>
-where
-    Left: Future,
-    Right: Future<Output = Left::Output>,
-{
-    #[pin]
-    left: Left,
-    #[pin]
-    right: Right,
+pin_project! {
+    /// A future polling two other futures and returning the output of the first one to complete.
+    ///
+    /// ## Example
+    ///
+    /// ```
+    /// use futures_race::{Race, RaceExt};
+    /// # use smol::Timer;
+    /// # use std::time::Duration;
+    ///
+    /// # smol::run(async {
+    /// let foo = async {
+    ///     Timer::new(Duration::from_millis(100)).await;
+    ///     42
+    /// };
+    ///
+    /// let bar = async {
+    ///     Timer::new(Duration::from_millis(250)).await;
+    ///     24
+    /// };
+    ///
+    /// let foobar = foo.race(bar).await;
+    /// assert_eq!(foobar, 42);
+    /// # })
+    /// ```
+    pub struct Race<Left, Right>
+    where
+        Left: Future,
+        Right: Future<Output = Left::Output>,
+    {
+        #[pin]
+        left: Left,
+        #[pin]
+        right: Right,
+    }
 }
 
 /// An extension trait for [`Future`]s that provides a way to create [`Race`]s.
@@ -55,12 +56,12 @@ pub trait RaceExt: Future {
     ///
     /// # smol::run(async {
     /// let foo = async {
-    ///     Timer::after(Duration::from_millis(100)).await;
+    ///     Timer::new(Duration::from_millis(100)).await;
     ///     42
     /// };
     ///
     /// let bar = async {
-    ///     Timer::after(Duration::from_millis(250)).await;
+    ///     Timer::new(Duration::from_millis(250)).await;
     ///     24
     /// };
     ///
@@ -89,16 +90,14 @@ where
 {
     type Output = Left::Output;
 
-    #[project]
     fn poll(self: Pin<&mut Self>, ctx: &mut Context) -> Poll<Self::Output> {
-        #[project]
-        let Race { left, right } = self.project();
+        let this = self.project();
 
-        if let poll @ Poll::Ready(_) = left.poll(ctx) {
+        if let poll @ Poll::Ready(_) = this.left.poll(ctx) {
             return poll;
         }
 
-        if let poll @ Poll::Ready(_) = right.poll(ctx) {
+        if let poll @ Poll::Ready(_) = this.right.poll(ctx) {
             return poll;
         }
 
