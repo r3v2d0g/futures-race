@@ -1,33 +1,7 @@
 #+OPTIONS: toc:nil
 
 * ~futures-race~
-[[https://github.com/r3v2d0g/futures-race/blob/main/LICENSE.txt][https://img.shields.io/crates/l/futures-race.svg]]
-[[https://crates.io/crates/futures-race][https://img.shields.io/crates/v/futures-race.svg]]
-[[https://docs.rs/futures-race][https://docs.rs/futures-race/badge.svg]]
-
-A way to poll two futures and get the output of the first one to complete.
-
-** Example
-#+BEGIN_SRC rust
-use futures_race::{Race, RaceExt};
-use smol::Timer;
-use std::time::Duration;
-
-smol::run(async {
-    let foo = async {
-        Timer::new(Duration::from_millis(100)).await;
-        42
-    };
-
-    let bar = async {
-        Timer::new(Duration::from_millis(250)).await;
-        24
-    };
-
-    let foobar = foo.race(bar).await;
-    assert_eq!(foobar, 42);
-});
-#+END_SRC
+Deprecated in favor of [[https://github.com/irrustible/futures-micro][~futures-micro~]] and [[https://github.com/stjepang/futures-lite][~futures-lite~]].
 
 ** License
 #+BEGIN_QUOTE

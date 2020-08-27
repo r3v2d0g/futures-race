@@ -12,30 +12,8 @@
 
 // ======================================== Documentation ======================================= \\
 
-//! A way to poll two futures and get the output of the first one to complete.
-//!
-//! ## Example
-//!
-//! ```rust
-//! use futures_race::{Race, RaceExt};
-//! use smol::Timer;
-//! use std::time::Duration;
-//!
-//! smol::run(async {
-//!     let foo = async {
-//!         Timer::new(Duration::from_millis(100)).await;
-//!         42
-//!     };
-//!
-//!     let bar = async {
-//!         Timer::new(Duration::from_millis(250)).await;
-//!         24
-//!     };
-//!
-//!     let foobar = foo.race(bar).await;
-//!     assert_eq!(foobar, 42);
-//! });
-//! ```
+//! Deprecated in favor of [`futures-micro`](https://github.com/irrustible/futures-micro) and
+//! [`futures-lite`](https://github.com/stjepang/futures-lite).
 
 // =========================================== Imports ========================================== \\
 
@@ -48,30 +26,9 @@ use pin_project_lite::pin_project;
 
 pin_project! {
     #[derive(Debug)]
-    /// A future polling two other futures and returning the output of the first one to complete.
-    ///
-    /// ## Example
-    ///
-    /// ```
-    /// use futures_race::{Race, RaceExt};
-    /// # use smol::Timer;
-    /// # use std::time::Duration;
-    ///
-    /// # smol::run(async {
-    /// let foo = async {
-    ///     Timer::new(Duration::from_millis(100)).await;
-    ///     42
-    /// };
-    ///
-    /// let bar = async {
-    ///     Timer::new(Duration::from_millis(250)).await;
-    ///     24
-    /// };
-    ///
-    /// let foobar = foo.race(bar).await;
-    /// assert_eq!(foobar, 42);
-    /// # })
-    /// ```
+    #[deprecated(since = "1.2.0", note = "please use `futures-micro` or `futures-lite` instead")]
+    /// Deprecated in favor of [`futures-micro`](https://github.com/irrustible/futures-micro) and
+    /// [`futures-lite`](https://github.com/stjepang/futures-lite).
     pub struct Race<Left, Right>
     where
         Left: Future,
@@ -86,33 +43,13 @@ pin_project! {
 
 // ========================================= Interfaces ========================================= \\
 
-/// An extension trait for [`Future`]s that provides a way to create [`Race`]s.
+#[deprecated(since = "1.2.0", note = "please use `futures-micro` or `futures-lite` instead")]
+/// Deprecated in favor of [`futures-micro`](https://github.com/irrustible/futures-micro) and
+/// [`futures-lite`](https://github.com/stjepang/futures-lite).
 pub trait RaceExt: Future {
-    /// Given a second future with the same output, creates and returns a new [`Race`] that will
-    /// poll both futures and return the output of the first one to complete.
-    ///
-    /// ## Example
-    ///
-    /// ```
-    /// use futures_race::{Race, RaceExt};
-    /// # use smol::Timer;
-    /// # use std::time::Duration;
-    ///
-    /// # smol::run(async {
-    /// let foo = async {
-    ///     Timer::new(Duration::from_millis(100)).await;
-    ///     42
-    /// };
-    ///
-    /// let bar = async {
-    ///     Timer::new(Duration::from_millis(250)).await;
-    ///     24
-    /// };
-    ///
-    /// let foobar = foo.race(bar).await;
-    /// assert_eq!(foobar, 42);
-    /// # })
-    /// ```
+    #[deprecated(since = "1.2.0", note = "please use `futures-micro` or `futures-lite` instead")]
+    /// Deprecated in favor of [`futures-micro`](https://github.com/irrustible/futures-micro) and
+    /// [`futures-lite`](https://github.com/stjepang/futures-lite).
     fn race<With>(self, with: With) -> Race<Self, With>
     where
         Self: Sized,
